@@ -29,8 +29,8 @@ namespace SuperCRM.Controllers
         }
 
         [HttpGet]
-        [PossessesPermissionCode]
-        public async Task<BaseListResponse<Contact>> List([FromQuery] GetContacts model)
+        [PossessesPermissionCode, AuthPermission]
+        public async Task<BaseListResponse<Contact>> GetContacts([FromQuery] GetContacts model)
         {
             Expression<Func<DbContact, bool>> predicate = c => c.OwnerId == this.UserService.CurrentUser.OwnerUserId;
 
@@ -48,7 +48,7 @@ namespace SuperCRM.Controllers
         }
 
         [HttpPost]
-        [PossessesPermissionCode]
+        [PossessesPermissionCode, AuthAction("Create")]
         public async Task<BaseResponse> Add(Contact model)
         {
             if (ModelState.IsValid)

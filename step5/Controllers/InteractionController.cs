@@ -9,6 +9,7 @@ using SuperCRM.ModelBinding;
 using SuperCRM.Models;
 using System;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace SuperCRM.Controllers
@@ -32,7 +33,7 @@ namespace SuperCRM.Controllers
         [PossessesPermissionCode, AuthPermission]
         public async Task<BaseListResponse<Interaction>> GetInteractions([FromQuery] GetInteractions model)
         {
-            Func<DbInteraction, bool> predicate;
+            Expression<Func<DbInteraction, bool>> predicate;
             if (model.ContactId.HasValue)
                 predicate = i => i.ContactId == model.ContactId.Value;
             else
@@ -52,6 +53,7 @@ namespace SuperCRM.Controllers
         }
 
         [HttpPost]
+        [AuthAction("Create")]
         public async Task<BaseResponse> Add(Interaction model)
         {
             if (ModelState.IsValid)
