@@ -11,7 +11,6 @@ using SuperCRM.Repositories;
 
 namespace SuperCRM.Controllers
 {
-	[Route("user")]
 	[ApiController]
 	public class UserController : SiteControllerBase
 	{

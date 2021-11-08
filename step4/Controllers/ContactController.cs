@@ -49,7 +49,7 @@ namespace SuperCRM.Controllers
 
         [HttpPost]
         [PossessesPermissionCode]
-        public async Task<BaseResponse> Add(Contact model)
+        public async Task<BaseResponse> Create(Contact model)
         {
             if (ModelState.IsValid)
             {
