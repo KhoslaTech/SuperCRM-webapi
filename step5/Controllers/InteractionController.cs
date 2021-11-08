@@ -53,8 +53,7 @@ namespace SuperCRM.Controllers
         }
 
         [HttpPost]
-        [AuthAction("Create")]
-        public async Task<BaseResponse> Add(Interaction model)
+        public async Task<BaseResponse> Create(Interaction model)
         {
             if (ModelState.IsValid)
             {
