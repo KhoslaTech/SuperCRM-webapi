@@ -14,7 +14,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using AutoMapper.Contrib.Autofac.DependencyInjection;
+
 
 namespace SuperCRM
 {
@@ -32,6 +34,7 @@ namespace SuperCRM
 				{
 					options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
 					options.JsonSerializerOptions.IgnoreNullValues = true;
+					options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 				})
 				.AddBodyAndRouteModelBinder();
 

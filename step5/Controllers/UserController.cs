@@ -41,7 +41,7 @@ namespace SuperCRM.Controllers
 				{
 					await this.permitRepository.AddPermitAsync(dbUser.Id, "Customer", dbUser.Id);
 					await SendVerificationMailAsync(dbUser);
-					var result = await this.authSessionProvider.LoginAsync(model.Email, model.Password, false, this.SecuritySettings.LetSuspendedAuthenticate);
+					var result = await this.authSessionProvider.LoginAsync(model.Email, model.Password, model.RememberMe, this.SecuritySettings.LetSuspendedAuthenticate);
 
 					return Ok(PopulateCurrentUserDetails(result));
 				}
@@ -64,6 +64,28 @@ namespace SuperCRM.Controllers
 
 			await SendVerificationMailAsync(this.UserService.CurrentUser);
 			return Ok();
+		}
+
+		[HttpPost]
+		[VerificationNotRequired, SkipActivityAuthorization]
+		[Route("self/change-email")]
+		public async Task<BaseResponse> ChangeEmail(ChangeEmail model)
+		{
+			var result = await this.UserService.ChangeUsernameAsync(this.UserService.CurrentUserId, model.Password, model.Email).ConfigureAwait(false);
+			switch (result)
+			{
+				case OpResult.Success:
+					await this.UserService.GenerateVerificationTokenAsync(this.UserService.CurrentUserId).ConfigureAwait(false);
+					await this.UserService.LoadAsync(this.UserService.CurrentUserId);
+					await SendVerificationMailAsync(this.UserService.CurrentUser);
+					return Ok(PopulateCurrentUserDetails());
+				case OpResult.AlreadyExists:
+					return Error(AppOpResult.UsernameAlreadyExists, "An account with this email is already registered.");
+				case OpResult.InvalidPassword:
+					return Error(OpResult.InvalidPassword, "Invalid password.");
+				default:
+					return Error(result);
+			}
 		}
 
 		private async Task SendVerificationMailAsync(DbUser user)
