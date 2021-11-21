@@ -26,6 +26,8 @@ namespace SuperCRM.Models
 
 		public AccountType Type { get; set; }
 
+		public bool RememberMe { get; set; }
+
 		[MaxLength(128)]
 		public string BusinessName { get; set; }
 
